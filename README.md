@@ -1,5 +1,8 @@
 # FinPulse
 
+[![CI](https://github.com/artstarzyk/finpulse/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/artstarzyk/finpulse/actions/workflows/ci.yml)
+[![Deploy](https://img.shields.io/badge/vercel-deployed-brightgreen?logo=vercel)](https://finpulse.vercel.app)
+
 **Real-time market intelligence** — a trading terminal built with Next.js, TypeScript, and a WebSocket-ready architecture.
 
 ---
@@ -81,12 +84,15 @@ e2e/                    # Playwright end-to-end tests
 
 ## Deployment (Vercel)
 
-Push to `main` — Vercel picks it up automatically via the GitHub integration. No extra configuration is required for the current skeleton.
+Push to `master` — Vercel picks it up automatically via the GitHub integration. Pull requests automatically get a **deploy preview URL** posted as a status check on the PR.
+
+No extra configuration is required for the current skeleton.
 
 ```bash
 # Or deploy manually
 pnpm build   # verify the build passes locally first
 ```
+
 
 ---
 
