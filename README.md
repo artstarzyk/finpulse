@@ -95,6 +95,6 @@ pnpm build   # verify the build passes locally first
 1. **Live BTC/USD price** — WebSocket feed from a public exchange API
 2. **Real-time chart** — TradingView Lightweight Charts with streaming candles
 3. **Instrument selector** — switch between crypto, equity, and forex pairs
-4. **Order book** — live bid/ask ladder with depth g
+4. **Order book** — live bid/ask ladder with depth visualization
 5. **Paper trading** — simulated order entry and position tracking
 6. **AI market summary** — LLM-generated commentary on current market conditions
