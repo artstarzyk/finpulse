@@ -1,6 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import HomePage from "../page";
+
+// Prevent real WebSocket in unit tests
+vi.mock("@/features/market/hooks/useLiveTicker", () => ({
+  useLiveTicker: vi.fn(),
+}));
 
 describe("HomePage", () => {
   it("renders the FinPulse app title", () => {
@@ -15,8 +20,9 @@ describe("HomePage", () => {
     expect(screen.getByText("Real-time market intelligence")).toBeDefined();
   });
 
-  it("renders the BTC/USD live feed placeholder", () => {
+  it("renders the BTC/USD live ticker section", () => {
     render(<HomePage />);
-    expect(screen.getByText("BTC/USD live feed coming soon")).toBeDefined();
+    expect(screen.getByText("BTC/USD Live Ticker")).toBeDefined();
+    expect(screen.getByTestId("live-price-card")).toBeDefined();
   });
 });

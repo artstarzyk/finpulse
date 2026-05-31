@@ -1,4 +1,4 @@
-import { LiveFeedPlaceholder } from "@/components/LiveFeedPlaceholder";
+import { LivePriceCard } from "@/features/market/components/LivePriceCard";
 
 export default function HomePage() {
   return (
@@ -16,13 +16,13 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Placeholder card */}
-      <LiveFeedPlaceholder symbol="BTC/USD" />
-
-      {/* Footer note */}
-      <p className="text-xs text-zinc-600">
-        Live data integration coming soon
-      </p>
+      {/* Live ticker card */}
+      <div className="flex flex-col items-center gap-3 w-full max-w-sm">
+        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest">
+          BTC/USD Live Ticker
+        </h2>
+        <LivePriceCard />
+      </div>
     </main>
   );
 }

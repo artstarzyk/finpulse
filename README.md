@@ -16,7 +16,7 @@
 | Styling | Tailwind CSS 4 |
 | App state | Zustand |
 | Server / API state | TanStack Query |
-| Real-time data | WebSocket (planned) |
+| Real-time data | WebSocket (Kraken v2) |
 | Charts | TradingView Lightweight Charts (planned) |
 | Unit tests | Vitest + React Testing Library |
 | E2E tests | Playwright |
@@ -96,11 +96,25 @@ pnpm build   # verify the build passes locally first
 
 ---
 
+## Iterations
+
+### Iteration 1 — Live BTC/USD Ticker (complete)
+
+- Browser connects directly to the **Kraken WebSocket v2** public endpoint (`wss://ws.kraken.com/v2`)
+- Subscribes to the `ticker` channel for `BTC/USD`
+- Displays live last price, bid, ask, connection status badge, and last update time
+- Connection state machine: `idle → connecting → connected → disconnected / error`
+- Zustand store holds all ticker state; no TanStack Query for WebSocket data
+- Fully deployable to Vercel (no backend required)
+
+---
+
 ## Planned Roadmap
 
-1. **Live BTC/USD price** — WebSocket feed from a public exchange API
+1. ~~**Live BTC/USD price** — WebSocket feed from a public exchange API~~ ✓ done
 2. **Real-time chart** — TradingView Lightweight Charts with streaming candles
 3. **Instrument selector** — switch between crypto, equity, and forex pairs
-4. **Order book** — live bid/ask ladder with depth visualization
-5. **Paper trading** — simulated order entry and position tracking
-6. **AI market summary** — LLM-generated commentary on current market conditions
+4. **Reconnect logic** — automatic exponential-backoff reconnect on disconnect
+5. **Order book** — live bid/ask ladder with depth visualization
+6. **Paper trading** — simulated order entry and position tracking
+7. **AI market summary** — LLM-generated commentary on current market conditions

@@ -1,32 +1,39 @@
 import { create } from "zustand";
-import type { Instrument, PriceTick } from "@/types/market";
+import type { ConnectionStatus, MarketSymbol, TickerData } from "@/features/market/types";
 
 interface MarketState {
-  /** Currently selected instrument */
-  selectedInstrument: Instrument | null;
-  /** Latest price ticks keyed by symbol */
-  ticks: Record<string, PriceTick>;
-  /** Whether the live feed is active */
-  isConnected: boolean;
+  symbol: MarketSymbol;
+  lastPrice: number | null;
+  bid: number | null;
+  ask: number | null;
+  lastUpdate: number | null;
+  status: ConnectionStatus;
+  error: string | null;
 
   // Actions
-  setSelectedInstrument: (instrument: Instrument) => void;
-  updateTick: (tick: PriceTick) => void;
-  setConnected: (connected: boolean) => void;
+  setStatus: (status: ConnectionStatus) => void;
+  setTicker: (data: TickerData) => void;
+  setError: (error: string) => void;
 }
 
-export const useMarketStore = create<MarketState>((set) => ({
-  selectedInstrument: null,
-  ticks: {},
-  isConnected: false,
+export const useMarketStore = create<MarketState>(() => ({
+  symbol: "BTC/USD",
+  lastPrice: null,
+  bid: null,
+  ask: null,
+  lastUpdate: null,
+  status: "idle",
+  error: null,
 
-  setSelectedInstrument: (instrument) =>
-    set({ selectedInstrument: instrument }),
+  setStatus: (status) => useMarketStore.setState({ status }),
 
-  updateTick: (tick) =>
-    set((state) => ({
-      ticks: { ...state.ticks, [tick.symbol]: tick },
-    })),
+  setTicker: (data) =>
+    useMarketStore.setState({
+      lastPrice: data.lastPrice,
+      bid: data.bid,
+      ask: data.ask,
+      lastUpdate: data.lastUpdate,
+    }),
 
-  setConnected: (connected) => set({ isConnected: connected }),
+  setError: (error) => useMarketStore.setState({ error }),
 }));

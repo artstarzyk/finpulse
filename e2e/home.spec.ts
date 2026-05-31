@@ -14,10 +14,9 @@ test.describe("FinPulse – smoke tests", () => {
     ).toBeVisible();
   });
 
-  test("homepage shows the BTC/USD placeholder card", async ({ page }) => {
+  test("homepage shows the BTC/USD live ticker card", async ({ page }) => {
     await page.goto("/");
-    await expect(
-      page.getByText("BTC/USD live feed coming soon"),
-    ).toBeVisible();
+    await expect(page.getByText("BTC/USD Live Ticker")).toBeVisible();
+    await expect(page.getByTestId("live-price-card")).toBeVisible();
   });
 });
