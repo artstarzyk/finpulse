@@ -107,14 +107,23 @@ pnpm build   # verify the build passes locally first
 - Zustand store holds all ticker state; no TanStack Query for WebSocket data
 - Fully deployable to Vercel (no backend required)
 
+### Iteration 2 — Production-grade WebSocket connection management (complete)
+
+- **Heartbeat handling** — Kraken sends periodic `heartbeat` messages; the client detects them and updates `lastMessageAt` without touching price state or re-rendering the price display
+- **Stale detection** — if no message (ticker or heartbeat) is received for **30 seconds** while connected, status transitions to `stale` and the UI surfaces a warning; the connection recovers automatically as soon as the next message arrives
+- **Automatic reconnect** — on any unexpected WebSocket close, status transitions to `reconnecting` and the client reconnects after a fixed **3-second delay**; subscription is re-sent automatically on the new connection; `reconnectAttempts` is tracked in the store and reset to 0 on successful reconnect
+- **No duplicate sockets** — any pending reconnect timer is cancelled on `disconnect()`, so intentional teardown (e.g. component unmount) never leaks a second connection
+- **Expanded connection states**: `idle | connecting | connected | reconnecting | stale | disconnected | error`
+- **UI observability** — card now shows: connection status badge, last update time, and seconds since last message (live, updated every second)
+
 ---
 
 ## Planned Roadmap
 
 1. ~~**Live BTC/USD price** — WebSocket feed from a public exchange API~~ ✓ done
-2. **Real-time chart** — TradingView Lightweight Charts with streaming candles
-3. **Instrument selector** — switch between crypto, equity, and forex pairs
-4. **Reconnect logic** — automatic exponential-backoff reconnect on disconnect
+2. ~~**Production-grade connection management** — heartbeat, stale detection, auto-reconnect~~ ✓ done
+3. **Real-time chart** — TradingView Lightweight Charts with streaming candles
+4. **Instrument selector** — switch between crypto, equity, and forex pairs
 5. **Order book** — live bid/ask ladder with depth visualization
 6. **Paper trading** — simulated order entry and position tracking
 7. **AI market summary** — LLM-generated commentary on current market conditions

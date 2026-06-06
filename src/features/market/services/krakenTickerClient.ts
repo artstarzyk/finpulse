@@ -1,8 +1,8 @@
 import type { MarketSymbol, TickerData } from "../types";
 
 const KRAKEN_WS_URL = "wss://ws.kraken.com/v2";
+const RECONNECT_DELAY_MS = 3_000;
 
-// Kraken v2 ticker message shapes
 interface KrakenTickerItem {
   symbol: string;
   bid: number;
@@ -16,11 +16,13 @@ interface KrakenTickerMessage {
   data: KrakenTickerItem[];
 }
 
-interface KrakenTickerClientCallbacks {
+export interface KrakenTickerClientCallbacks {
   onOpen?: () => void;
   onClose?: () => void;
+  onReconnecting?: () => void;
   onError?: (error: Event) => void;
   onTicker?: (data: TickerData) => void;
+  onHeartbeat?: () => void;
 }
 
 export interface KrakenTickerClient {
@@ -33,6 +35,7 @@ export function createKrakenTickerClient(
   callbacks: KrakenTickerClientCallbacks,
 ): KrakenTickerClient {
   let ws: WebSocket | null = null;
+  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
   function connect() {
     ws = new WebSocket(KRAKEN_WS_URL);
@@ -48,35 +51,54 @@ export function createKrakenTickerClient(
     };
 
     ws.onclose = () => {
-      if (ws === null) return; // intentional disconnect — ignore
-      callbacks.onClose?.();
+      if (ws === null) {
+        return; // intentional disconnect — ignore
+      }
+      callbacks.onReconnecting?.();
+      reconnectTimer = setTimeout(() => {
+        reconnectTimer = null;
+        connect();
+      }, RECONNECT_DELAY_MS);
     };
 
     ws.onerror = (event) => {
-      if (ws === null) return; // intentional disconnect — ignore
+      if (ws === null) {
+        return; // intentional disconnect — ignore
+      }
       callbacks.onError?.(event);
     };
 
     ws.onmessage = (event: MessageEvent) => {
-      let msg: KrakenTickerMessage;
       try {
-        msg = JSON.parse(event.data);
-        if (msg.channel !== "ticker") return;
+        const msg: KrakenTickerMessage = JSON.parse(event.data);
+
+        if (msg.channel === "heartbeat") {
+          callbacks.onHeartbeat?.();
+          return;
+        }
+
+        if (msg.channel !== "ticker") {
+          return;
+        }
 
         callbacks.onTicker?.({
           symbol,
           lastPrice: msg.data[0].last,
           bid: msg.data[0].bid,
           ask: msg.data[0].ask,
-          lastUpdate: Date.now(),
+          lastTickerMessageAt: Date.now(),
         });
-      } catch {
-        console.error("[KrakenTickerClient] Failed to parse message", event.data);
+      } catch (error) {
+        console.error("[KrakenTickerClient] Failed to parse message", error);
       }
     };
   }
 
   function disconnect() {
+    if (reconnectTimer !== null) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
     const socket = ws;
     ws = null; // null first so callbacks know this close is intentional
     socket?.close();

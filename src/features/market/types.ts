@@ -4,6 +4,8 @@ export type ConnectionStatus =
   | "idle"
   | "connecting"
   | "connected"
+  | "reconnecting"
+  | "stale"
   | "disconnected"
   | "error";
 
@@ -12,5 +14,5 @@ export interface TickerData {
   lastPrice: number;
   bid: number;
   ask: number;
-  lastUpdate: number; // Unix ms
+  lastTickerMessageAt: number; // Unix ms
 }
