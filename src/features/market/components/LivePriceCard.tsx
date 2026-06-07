@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useLiveTicker } from "../hooks/useLiveTicker";
 import { useMarketStore } from "@/store/marketStore";
 import type { ConnectionStatus } from "../types";
@@ -58,20 +57,10 @@ function formatTime(ms: number | null): string {
 export function LivePriceCard() {
   useLiveTicker("BTC/USD");
 
-  const { symbol, lastPrice, bid, ask, lastTickerMessageAt, lastMessageAt, status } =
-    useMarketStore();
+  const { symbol, lastPrice, bid, ask, lastTickerMessageAt, status } = useMarketStore();
   const isStale = status === "stale";
   const badge = STATUS_BADGE[status];
   const hasData = lastPrice !== null;
-
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1_000);
-    return () => clearInterval(id);
-  }, []);
-
-  const secondsSinceLastMessage =
-    lastMessageAt !== null ? Math.floor((now - lastMessageAt) / 1_000) : null;
 
   return (
     <div
@@ -134,20 +123,12 @@ export function LivePriceCard() {
             No market data received for 30 seconds
           </p>
         ) : (
-          <>
-            <p>
-              Last update:{" "}
-              <span className="text-zinc-400" data-testid="last-update">
-                {formatTime(lastTickerMessageAt)}
-              </span>
-            </p>
-            <p data-testid="last-message-age">
-              Last message:{" "}
-              <span className="text-zinc-400">
-                {secondsSinceLastMessage !== null ? `${secondsSinceLastMessage}s ago` : "—"}
-              </span>
-            </p>
-          </>
+          <p>
+            Last update:{" "}
+            <span className="text-zinc-400" data-testid="last-update">
+              {formatTime(lastTickerMessageAt)}
+            </span>
+          </p>
         )}
       </div>
     </div>

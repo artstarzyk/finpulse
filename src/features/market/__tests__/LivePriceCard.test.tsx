@@ -14,7 +14,6 @@ const INITIAL_STATE = {
   bid: null,
   ask: null,
   lastTickerMessageAt: null,
-  lastMessageAt: null,
   status: "idle" as const,
   reconnectAttempts: 0,
   error: null,
@@ -81,25 +80,4 @@ describe("LivePriceCard", () => {
     );
   });
 
-  it("shows last message age when connected with a known lastMessageAt", () => {
-    vi.useFakeTimers();
-    const now = Date.now();
-    vi.setSystemTime(now);
-
-    useMarketStore.setState({
-      status: "connected",
-      lastMessageAt: now - 4_000,
-    });
-    render(<LivePriceCard />);
-
-    expect(screen.getByTestId("last-message-age").textContent).toContain("4s ago");
-
-    vi.useRealTimers();
-  });
-
-  it("shows dash for last message age when lastMessageAt is null", () => {
-    useMarketStore.setState({ status: "connected", lastMessageAt: null });
-    render(<LivePriceCard />);
-    expect(screen.getByTestId("last-message-age").textContent).toContain("—");
-  });
 });
