@@ -40,3 +40,7 @@ tsconfig.tsbuildinfo
 
 # Claude Code
 .claude/settings.local.json
+
+# Local planning documents
+plans/
+prd/
