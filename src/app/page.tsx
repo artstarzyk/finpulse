@@ -1,4 +1,5 @@
 import { TickerStrip } from "@/features/market/components/TickerStrip";
+import { CandleChart } from "@/features/market/components/CandleChart";
 
 export default function HomePage() {
   return (
@@ -6,7 +7,9 @@ export default function HomePage() {
       <header className="border-b border-zinc-800">
         <TickerStrip />
       </header>
-      <main className="flex flex-1 flex-col p-6" />
+      <main className="flex flex-1 flex-col p-6">
+        <CandleChart interval={60} />
+      </main>
     </div>
   );
 }

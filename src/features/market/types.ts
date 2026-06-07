@@ -16,3 +16,13 @@ export interface TickerData {
   ask: number;
   lastTickerMessageAt: number; // Unix ms
 }
+
+export type CandleInterval = 60 | 1440;
+
+export interface Candle {
+  time: number; // Unix seconds
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}

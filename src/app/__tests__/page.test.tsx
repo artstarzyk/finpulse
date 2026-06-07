@@ -6,6 +6,10 @@ vi.mock("@/features/market/hooks/useLiveTicker", () => ({
   useLiveTicker: vi.fn(),
 }));
 
+vi.mock("@/features/market/components/CandleChart", () => ({
+  CandleChart: () => <div data-testid="candle-chart" />,
+}));
+
 describe("HomePage", () => {
   it("renders the ticker strip", () => {
     render(<HomePage />);
