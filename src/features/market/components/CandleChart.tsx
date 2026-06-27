@@ -75,20 +75,19 @@ export function CandleChart({ interval }: CandleChartProps) {
   }, []);
 
   useEffect(() => {
-    if (!seriesRef.current || !candles) {
+    if (!seriesRef.current) {
       return;
     }
     currentCandleRef.current = null;
-    seriesRef.current.setData(
-      candles.map((candle) => ({ ...candle, time: candle.time as UTCTimestamp })),
-    );
-    chartRef.current?.timeScale().fitContent();
-  }, [candles]);
-
-  useEffect(() => {
-    currentCandleRef.current = null;
-    seriesRef.current?.setData([]);
-  }, [interval]);
+    if (candles) {
+      seriesRef.current.setData(
+        candles.map((candle) => ({ ...candle, time: candle.time as UTCTimestamp })),
+      );
+      chartRef.current?.timeScale().fitContent();
+    } else {
+      seriesRef.current.setData([]);
+    }
+  }, [candles, interval]);
 
   useEffect(() => {
     if (!seriesRef.current || !lastPrice || !lastTickerMessageAt) {

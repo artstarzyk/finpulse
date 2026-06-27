@@ -110,7 +110,41 @@ describe("CandleChart", () => {
     );
   });
 
-  it("clears series data and resets current candle when interval changes", () => {
+  it("repopulates series from cache when switching back to a previously loaded interval", () => {
+    const candles = [{ time: 1700000000, open: 67000, high: 68000, low: 66000, close: 67500 }];
+
+    mockUseCandles.mockReturnValue({
+      data: candles,
+      isLoading: false,
+      isError: false,
+    } as unknown as ReturnType<typeof useCandles>);
+
+    const { rerender } = render(<CandleChart interval={60} />);
+
+    // Switch to 1D with no cached data (loading)
+    mockUseCandles.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    } as unknown as ReturnType<typeof useCandles>);
+    rerender(<CandleChart interval={1440} />);
+
+    mockSetData.mockClear();
+
+    // Switch back to 1H — same candle array returned from cache
+    mockUseCandles.mockReturnValue({
+      data: candles,
+      isLoading: false,
+      isError: false,
+    } as unknown as ReturnType<typeof useCandles>);
+    rerender(<CandleChart interval={60} />);
+
+    expect(mockSetData).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ time: 1700000000 })]),
+    );
+  });
+
+  it("clears series when switching to an interval with no cached data", () => {
     mockUseCandles.mockReturnValue({
       data: [{ time: 1700000000, open: 67000, high: 68000, low: 66000, close: 67500 }],
       isLoading: false,
@@ -118,13 +152,13 @@ describe("CandleChart", () => {
     } as unknown as ReturnType<typeof useCandles>);
 
     const { rerender } = render(<CandleChart interval={60} />);
-
-    act(() => {
-      useMarketStore.setState({ lastPrice: 68000, lastTickerMessageAt: Date.now() });
-    });
-
     mockSetData.mockClear();
 
+    mockUseCandles.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    } as unknown as ReturnType<typeof useCandles>);
     rerender(<CandleChart interval={1440} />);
 
     expect(mockSetData).toHaveBeenCalledWith([]);
