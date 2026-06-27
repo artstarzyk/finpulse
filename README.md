@@ -17,7 +17,7 @@
 | App state | Zustand |
 | Server / API state | TanStack Query |
 | Real-time data | WebSocket (Kraken v2) |
-| Charts | TradingView Lightweight Charts (planned) |
+| Charts | TradingView Lightweight Charts |
 | Unit tests | Vitest + React Testing Library |
 | E2E tests | Playwright |
 | Linting | ESLint (Next.js config) |
@@ -122,7 +122,7 @@ pnpm build   # verify the build passes locally first
 
 1. ~~**Live BTC/USD price** — WebSocket feed from a public exchange API~~ ✓ done
 2. ~~**Production-grade connection management** — heartbeat, stale detection, auto-reconnect~~ ✓ done
-3. **Real-time chart** — TradingView Lightweight Charts with streaming candles
+3. ~~**Real-time chart** — TradingView Lightweight Charts with streaming candles and 1H/1D interval selector~~ ✓ done
 4. **Instrument selector** — switch between crypto, equity, and forex pairs
 5. **Order book** — live bid/ask ladder with depth visualization
 6. **Paper trading** — simulated order entry and position tracking
