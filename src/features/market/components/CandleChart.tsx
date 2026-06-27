@@ -87,6 +87,7 @@ export function CandleChart({ interval }: CandleChartProps) {
 
   useEffect(() => {
     currentCandleRef.current = null;
+    seriesRef.current?.setData([]);
   }, [interval]);
 
   useEffect(() => {

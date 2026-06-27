@@ -110,6 +110,26 @@ describe("CandleChart", () => {
     );
   });
 
+  it("clears series data and resets current candle when interval changes", () => {
+    mockUseCandles.mockReturnValue({
+      data: [{ time: 1700000000, open: 67000, high: 68000, low: 66000, close: 67500 }],
+      isLoading: false,
+      isError: false,
+    } as unknown as ReturnType<typeof useCandles>);
+
+    const { rerender } = render(<CandleChart interval={60} />);
+
+    act(() => {
+      useMarketStore.setState({ lastPrice: 68000, lastTickerMessageAt: Date.now() });
+    });
+
+    mockSetData.mockClear();
+
+    rerender(<CandleChart interval={1440} />);
+
+    expect(mockSetData).toHaveBeenCalledWith([]);
+  });
+
   it("tracks running high and low across ticks in the same candle period", () => {
     mockUseCandles.mockReturnValue({
       data: [],
