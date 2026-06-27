@@ -116,6 +116,14 @@ pnpm build   # verify the build passes locally first
 - **Expanded connection states**: `idle | connecting | connected | reconnecting | stale | disconnected | error`
 - **UI observability** — card now shows: connection status badge, last update time, and seconds since last message (live, updated every second)
 
+### Iteration 3 — Real-time Candlestick Chart (complete)
+
+- **Candlestick chart** powered by TradingView Lightweight Charts, rendered directly in the browser
+- **Historical OHLC data** fetched from the Kraken REST API (`/0/public/OHLC`) via a Next.js API route
+- **Live candle updates** — incoming WebSocket ticker prices update the current candle in real time (open, high, low, close tracked per period)
+- **Interval selector** — toggle between **1H** and **1D** candle granularity; switching resets the series cleanly to prevent stale-data errors
+- **TanStack Query** manages candle caching with a 60-second stale time, avoiding redundant refetches on re-render
+
 ---
 
 ## Planned Roadmap
